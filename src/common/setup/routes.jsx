@@ -1,18 +1,15 @@
 import * as React from 'react';
-import { createBrowserHistory } from 'history';
-import { Route, Switch } from 'react-router-dom';
-import { ConnectedRouter } from 'connected-react-router';
+import { Router, Route, Switch } from 'react-router-dom';
+import history from './history';
 
 import HomePage from '../../home/homePage';
 
-export const history = createBrowserHistory();
-
 const Routes = () => (
-  <ConnectedRouter history={history}>
+  <Router history={history}>
     <Switch>
       <Route exact path="/" component={HomePage} />
     </Switch>
-  </ConnectedRouter>
+  </Router>
 );
 
 export default Routes;

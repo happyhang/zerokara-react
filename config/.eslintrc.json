@@ -29,6 +29,7 @@
     "import/resolver": {
       "alias": {
         "map": [
+          ["context", "./src/context"],
           ["common", "./src/common"],
           ["assets", "./src/assets"]
         ],

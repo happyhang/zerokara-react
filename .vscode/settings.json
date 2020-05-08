@@ -4,4 +4,7 @@
     "editor.tabSize": 2,
     "window.zoomLevel": 0,
     "eslint.autoFixOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+    },
 }

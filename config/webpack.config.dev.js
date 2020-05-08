@@ -1,5 +1,6 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const webpack = require('webpack');
 const path = require('path');
 
@@ -43,6 +44,7 @@ module.exports = env => ({
       // To prevent other library using jquery to include the full library (huge!)
       'jquery': 'jquery/dist/jquery.slim.js',
       
+      'context': path.join(appSrc, 'context'),
       'common': path.join(appSrc, 'common'),
       'assets': path.join(appSrc, 'assets'),
     },
@@ -89,18 +91,32 @@ module.exports = env => ({
               [ 
                 '@babel/preset-env',
                 {
-                  targets: {
-                    ie: 11,
-                  },
-                  // This will help to polyfill the needed components.
-                  useBuiltIns: "usage",
-                  // Have to specify this for compilation to work.
-                  modules: "commonjs"
+                  // This will help to polyfill the needed components based on target browser.
+                  // It will automatically target browsers specified in browserslist.
+                  useBuiltIns: "entry",
+                  corejs: 3,
                 },
-              ]
+              ],
             ],
-            // Have to ignore this for compilation to work. (https://github.com/babel/babel/issues/8731)
-            ignore: [/[\/\\]core-js/, /@babel[\/\\]runtime/],
+            plugins: [
+              // Plugin to enable CSS Module
+              ['react-css-modules', {
+                generateScopedName: '[local]-[hash:base64:10]',
+                // Only include .module.scss files.
+                // Using this convention allows us to safely
+                // use other global styles not inteded to be modularized.
+                exclude: '^(?!.*module).+\.(scss)$',
+                filetypes: {
+                  '.scss': {
+                    'syntax': 'postcss-scss',
+                  },
+                },
+                attributeNames: {
+                  overlayStyleName: "overlayClassName",
+                  bodyOpenStyleName: "bodyOpenClassName",
+                },
+              }]
+            ],
           },
         }
       },
@@ -116,7 +132,56 @@ module.exports = env => ({
         // Compiles css and scss.
         test: /\.s?css$/, // SCSS is superset of CSS, so it can be compiled fine (should be).
         include: appSrc,
-        use: ['style-loader', 'css-loader?sourceMap', 'sass-loader?sourceMap'],
+        use: [
+          MiniCssExtractPlugin.loader,
+          {
+            loader: 'css-loader',
+            options: {
+              sourceMap: true,
+              importLoaders: 2,
+              // CSS Module requires the below 2 configs.
+              modules: {
+                localIdentName: '[local]-[hash:base64:10]',
+                // This is needed so that it does not compile styles intended to be global.
+                // (eg. third party css)
+                getLocalIdent: (loaderContext, localIdentName, localName, options) => {
+                  return loaderContext.resourcePath.includes('node_modules')
+                    || loaderContext.resourcePath.includes('styles/')
+                    || loaderContext.resourcePath.includes('styles\\')
+                    ? localName
+                    : false;
+                },
+              },
+            }
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              sourceMap: true,
+              plugins: () => [
+                require('postcss-import'),
+                require('autoprefixer'),
+                require('postcss-preset-env'),
+                require('cssnano')({ preset: 'default' }),
+              ],
+            }
+          },
+          'sass-loader?sourceMap',
+          {
+            loader: 'sass-resources-loader',
+            options: {
+              sourceMap: true,
+              // Add all SASS variables/mixins to inject to every file here.
+              resources: [
+                './src/styles/_config.scss',
+                './src/styles/bootstrap-override.scss',
+                './node_modules/bootstrap/scss/_functions.scss',
+                './node_modules/bootstrap/scss/_variables.scss',
+                './node_modules/bootstrap/scss/mixins/_breakpoints.scss',
+              ],
+            },
+          }
+        ],
       },
       {
         // Grab images.
@@ -127,16 +192,7 @@ module.exports = env => ({
           // url-loader will convert the resource as data URI if it is less than this size.
           limit: 10000,
         },
-      },
-      {
-        // Grab other assets.
-        test: /\.xlsx$/i,
-        include: appSrc,
-        loader: require.resolve('file-loader'),
-        options: {
-          name: '[name]-[hash].[ext]'
-        },
-      },
+      }
     ],
   },
   plugins: [
@@ -154,7 +210,17 @@ module.exports = env => ({
         ignore: [publicHtml],
       },
     ]),
+    // Extract css to separate files.
+    new MiniCssExtractPlugin({
+      filename: '[name].css',
+    }),
   ],
+  optimization: {
+    // Code splitting.
+    splitChunks: {
+      chunks: 'all',
+    }
+  },
   // Turn off performance hints during development because we are not on optimization stage yet.
   // You may want to turn this on when file size optimization starts to become a need.
   performance: {

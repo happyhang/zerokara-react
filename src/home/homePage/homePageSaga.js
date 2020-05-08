@@ -1,5 +1,5 @@
 import { takeLatest } from 'redux-saga/effects';
-import { INIT } from './homePageDucks.gen';
+import { INIT } from './homePageActions';
 
 function onInit() { }
 

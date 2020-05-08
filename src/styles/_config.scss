@@ -1,0 +1,61 @@
+/**
+ * Colors (color)
+ */
+$color-grey-900: #000;
+$color-grey-800: #4f4f4f;
+$color-grey-700: #636363;
+$color-grey-600: #8f8f8f;
+$color-grey-500: #adadad;
+$color-grey-400: #c7c7c7;
+$color-grey-300: #d0d0d0;
+$color-grey-200: #e4e4e4;
+$color-grey-100: #fff;
+
+/**
+ * Mixins (Content)
+ */
+
+@mixin text-content($font-size: $fs-standard) {
+  font-size: $font-size;
+  font-weight: 300;
+}
+
+/**
+ * Buttons Mixin
+ */
+
+// Reset the browser default button style. Useful for implementing custom button with own style.
+@mixin reset-button() {
+  background-color: transparent;
+  border: 0px;
+  padding: 0;
+  font-weight: inherit;
+  text-align: initial;
+}
+
+// Reset the <a> styles. Useful for implementing custom link with own style.
+@mixin reset-link() {
+  text-decoration: none;
+
+  &:hover {
+    background-color: initial;
+  }
+}
+
+/**
+ * Images Mixin
+ */
+
+// Makes the image automatically scale to fit the height specified.
+@mixin image-fit-height($h) {
+  height: $h;
+  width: auto;
+  display: block;
+}
+
+// Makes the image automatically scale to fit the width specified.
+@mixin image-fit-width($w) {
+ height: auto;
+ width: $w;
+ display: block;
+}

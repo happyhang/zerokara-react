@@ -1,9 +1,9 @@
 
 import { all, fork } from 'redux-saga/effects';
-import homePageSaga from '../../home/homePage/homePageSaga';
+import appSaga from 'context/app/appSaga';
 
 export default function* root() {
   yield all([
-    fork(homePageSaga),
+    fork(appSaga),
   ]);
 }

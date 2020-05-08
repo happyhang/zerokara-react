@@ -1,12 +1,10 @@
-// import { combineReducers } from 'redux';
-import { connectRouter } from 'connected-react-router';
-import { history } from './routes';
-import homePageReducer from '../../home/homePage/homePageDucks.gen';
+import { combineReducers } from 'redux';
+import app from 'context/app/appReducer';
+import persist from 'context/persist/persistReducer';
 
-export default ({
+export default combineReducers({
   // Once you have something to persist, link this to
   // the reducer to persist.
-  persist: () => ({}),
-  router: connectRouter(history),
-  home: homePageReducer,
+  persist,
+  app,
 });

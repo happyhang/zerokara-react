@@ -7,16 +7,33 @@ An opinionated boilerplate for a React web application using `redux-saga`, compo
 1. Clone this project.
 
 ``` bash
-git clone https://github.com/happyhang/zerokara-react.git
+git clone https://github.com/happyhang/zerokara-react.git FolderNameToCloneTo
 ```
 
-2. Install dependencies.
+2. Navigate to the project
+
+``` bash
+cd ProjectName
+```
+
+3. Reinitialise git history
+
+``` bash
+rm -rf .git
+git init
+```
+
+4. Replace Placeholder
+
+Using your preferred tool, do a global project replace for text `zerokara-react` to your project name.
+
+5. Install dependencies.
 
 ``` bash
 yarn install
 ```
 
-3. Run webpack server for development.
+6. Run webpack server for development.
 
 ``` bash
 yarn start
@@ -24,7 +41,7 @@ yarn start
 
 The server will be hosted in `http://localhost:8080`.
 
-4. Build source for deployment.
+7. Build source for deployment.
 
 ``` bash
 yarn build
@@ -48,7 +65,7 @@ This boilerplate will have the following dependencies specified in `package.json
 
 ### Core
 
-- React 16.6
+- React 16.13
   - prop-types
 - Redux
   - react-redux
@@ -57,14 +74,22 @@ This boilerplate will have the following dependencies specified in `package.json
     - babel/polyfill
     - @babel/core
     - @babel/preset-env
+      - core-js
     - @babel/preset-react
+    - @babel/plugin-syntax-dynamic-import
+    - babel-plugin-react-css-modules
+      - postcss-scss
   - file-loader
   - css-loader
   - sass-loader
-  - style-loader
+  - sass-resources-loader
+  - postcss-loader
+    - postcss-import
+    - autoprefixer
+    - postcss-preset-env
+    - cssnano
   - source-map-loader
   - eslint-loader
-  - style-loader
   - url-loader
   - clean-webpack-plugin
   - html-webpack-plugin
@@ -81,12 +106,16 @@ This boilerplate will have the following dependencies specified in `package.json
 
 ### UI & Styling
 
-- Bootstrap 4.1
+CSS Module
+
+- Bootstrap 4.4
 - node-sass
+- clsx
 - react-popper
-  - popper.js
+  - @popperjs/core
 - react-modal
 - react-toastify
+- react-onclickoutside
 
 ### SPA Routing
 
@@ -98,22 +127,36 @@ This boilerplate will have the following dependencies specified in `package.json
 ### Form
 
 - Formik
-- react-datetime
+- react-datepicker
 - react-number-format
 - react-dropzone
-- react-select
+- rc-select
 - big.js
+- libphonenumber-js
+- tinymce
+
+### Reporting & Chart
+
+- echarts-for-react
+  - echarts
+
+### Dynamic Loading
+
+- redux-dynamic-modules
+  - redux-dynamic-modules-saga
 
 ### Utilities Libraries
 
 - axios
 - jquery (Needed by bootstrap)
+- lodash
 - immer
-- reselect
-- moment
+- luxon
 - query-string
 - js-cookie
-- react-onclickoutside
+- react-helmet
+- react-loadable
+- react-to-print
 
 ### Development & Optimization
 
