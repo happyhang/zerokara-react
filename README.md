@@ -49,6 +49,8 @@ yarn build
 
 The built output will be in `/dist/` folder.
 
+More documentations can be found in the `docs` folder. They are still quite incomplete by now but hopefully it can still help you with exploring stuffs out.
+
 ## Command List
 
 Use `yarn [command]` to run.
@@ -106,7 +108,7 @@ This boilerplate will have the following dependencies specified in `package.json
 
 ### UI & Styling
 
-CSS Module
+Utilizing CSS Module to separate CSS classes per component. [Read this](https://github.com/gajus/babel-plugin-react-css-modules) for more details.
 
 - Bootstrap 4.4
 - node-sass
@@ -141,6 +143,10 @@ CSS Module
   - echarts
 
 ### Dynamic Loading
+
+Utilizing dynamic modules to defer the setup of reducers and sagas of components (needed if you want to code split sagas and reducers). [Read this](https://github.com/microsoft/redux-dynamic-modules) for more details.
+
+To set up a page using this, you can refer to how `homePage` is declared and organised.
 
 - redux-dynamic-modules
   - redux-dynamic-modules-saga
