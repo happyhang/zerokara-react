@@ -1,5 +1,5 @@
 import exampleSaga from './examplePageSaga';
-import exampleReducer from './examplePageReducer';
+import { exampleReducer } from './examplePageSlice';
 
 export default () => ({
   id: 'example',

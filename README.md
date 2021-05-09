@@ -67,11 +67,13 @@ This boilerplate will have the following dependencies specified in `package.json
 
 ### Core
 
-- React 16.13
+- React 17.0
   - prop-types
 - Redux
   - react-redux
 - Webpack 4
+  - webpack-dev-server 4.0 beta 3
+  - webpack-cli
   - babel-loader
     - babel/polyfill
     - @babel/core
@@ -79,9 +81,6 @@ This boilerplate will have the following dependencies specified in `package.json
       - core-js
     - @babel/preset-react
     - @babel/plugin-syntax-dynamic-import
-    - babel-plugin-react-css-modules
-      - postcss-scss
-  - file-loader
   - css-loader
   - sass-loader
   - sass-resources-loader
@@ -91,17 +90,18 @@ This boilerplate will have the following dependencies specified in `package.json
     - postcss-preset-env
     - cssnano
   - source-map-loader
-  - eslint-loader
-  - url-loader
+  - eslint-webpack-plugin
   - clean-webpack-plugin
+  - copy-webpack-plugin
   - html-webpack-plugin
   - mini-css-extract-plugin
-  - optimize-css-assets-webpack-plugin
   - terser-webpack-plugin
-  - webpack-cli
+  - dotenv-webpack
+  
 
 ### Redux Middlewares
 
+- @reduxjs/toolkit
 - redux-saga
 - redux-logger
 - redux-persist
@@ -110,7 +110,7 @@ This boilerplate will have the following dependencies specified in `package.json
 
 Utilizing CSS Module to separate CSS classes per component. [Read this](https://github.com/gajus/babel-plugin-react-css-modules) for more details.
 
-- Bootstrap 4.4
+- Bootstrap 5.0
 - node-sass
 - clsx
 - react-popper
@@ -121,9 +121,8 @@ Utilizing CSS Module to separate CSS classes per component. [Read this](https://
 
 ### SPA Routing
 
-- react-router 4
-  - connected-react-router
-  - history
+- react-router 5.2
+  - history (Must be version 4 for browser router to work)
   - react-router-dom
 
 ### Form
@@ -139,8 +138,9 @@ Utilizing CSS Module to separate CSS classes per component. [Read this](https://
 
 ### Reporting & Chart
 
-- echarts-for-react
-  - echarts
+- echarts 5
+  - echarts-for-react
+  
 
 ### Dynamic Loading
 
@@ -175,12 +175,6 @@ To set up a page using this, you can refer to how `homePage` is declared and org
   - eslint-plugin-react-hooks
 - redux-devtools-extension
 - webpack-bundle-analyzer
-
-## Configuration & Environment variables
-
-There are 3 predefined environments in this boilerplate: `development`, `staging` and `production`. You can add additional environment(s) if you want to.
-
-You can set up environment configurations (that will be available throughout your codebase via `process.env.VAR_NAME`) in `/config/env.[environment].js` file.
 
 ## Contributing
 

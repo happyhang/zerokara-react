@@ -2,8 +2,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const EsLintPlugin = require('eslint-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const webpack = require('webpack');
 const path = require('path');
 
 // Webpack uses `publicPath` to determine where the app is being served from.
@@ -18,10 +18,39 @@ const appSrc = path.resolve('./src');
 
 // Define the public asset folder.
 const publicResourceSrc = path.resolve('./public');
-const publicHtml = path.join(publicResourceSrc, 'index.html');
+const publicHtml = path.join(appSrc, 'index.html');
 
-// Get the environment variables
-const getEnvVariables = env => require(`./env.${(env && env.APP_ENV) || 'staging'}`);
+// Storing CSS preprocessors for reuse.
+const cssPreprocessors = [{
+  loader: 'postcss-loader',
+  options: {
+    sourceMap: true,
+    postcssOptions: {
+      plugins: [
+        require('postcss-import'),
+        require('autoprefixer'),
+        require('postcss-preset-env'),
+        require('cssnano')({ preset: 'default' }),
+      ],
+    }
+  }
+},
+{
+  loader: "sass-loader",
+  options: {
+    sourceMap: true,
+  },
+},
+{
+  loader: 'sass-resources-loader',
+  options: {
+    sourceMap: true,
+    // Add all SASS variables/mixins to inject to every file here.
+    resources: [
+      path.join(appSrc, 'styles/_globalMixin.scss'),
+    ],
+  },
+}];
 
 module.exports = env => ({
   mode: 'production',
@@ -62,25 +91,12 @@ module.exports = env => ({
 
     // This is the URL that app is served from. We use "/" in development.
     publicPath,
+    
+    // Build the project to the dist folder.
+    path: path.join(projectPath, 'dist'),
   },
   module: {
     rules: [
-      {
-        // First, run the linter.
-        // It's important to do this before Babel processes the JS.
-        test: /\.(js|mjs|jsx)$/,
-        enforce: 'pre',
-        use: [
-          {
-            options: {
-              eslintPath: require.resolve('eslint'),
-              configFile: "./config/.eslintrc.json"
-            },
-            loader: require.resolve('eslint-loader'),
-          },
-        ],
-        include: appSrc,
-      },
       {
         // Compiles our Javascript source.
         test: /\.(js|jsx)$/,
@@ -99,25 +115,6 @@ module.exports = env => ({
                 },
               ],
             ],
-            plugins: [
-              // Plugin to enable CSS Module
-              ['react-css-modules', {
-                generateScopedName: '[local]-[hash:base64:10]',
-                // Only include .module.scss files.
-                // Using this convention allows us to safely
-                // use other global styles not inteded to be modularized.
-                exclude: '^(?!.*module).+\.(scss)$',
-                filetypes: {
-                  '.scss': {
-                    'syntax': 'postcss-scss',
-                  },
-                },
-                attributeNames: {
-                  overlayStyleName: "overlayClassName",
-                  bodyOpenStyleName: "bodyOpenClassName",
-                },
-              }]
-            ],
           },
         }
       },
@@ -130,72 +127,51 @@ module.exports = env => ({
         include: appSrc,
       },
       {
-        // Compiles css and scss.
-        test: /\.s?css$/, // SCSS is superset of CSS, so it can be compiled fine (should be).
+        // Compiles SCSS modules.
+        test: /\.module\.scss$/,
         include: appSrc,
         use: [
           MiniCssExtractPlugin.loader,
           {
             loader: 'css-loader',
             options: {
-              importLoaders: 2,
+              sourceMap: true,
+              importLoaders: 3,
               // CSS Module requires the below 2 configs.
               modules: {
-                localIdentName: '[local]-[hash:base64:10]',
-                // This is needed so that it does not compile styles intended to be global.
-                // (eg. third party css)
-                getLocalIdent: (loaderContext, localIdentName, localName, options) => {
-                  return loaderContext.resourcePath.includes('node_modules')
-                    || loaderContext.resourcePath.includes('styles/')
-                    || loaderContext.resourcePath.includes('styles\\')
-                    ? localName
-                    : false;
-                }
+                localIdentName: '[local]-[contenthash:base64:10]',
               },
             }
           },
+          ...cssPreprocessors,
+        ],
+      },
+      {
+        // Compiles css and scss.
+        test: /\.s?css$/, // SCSS is superset of CSS, so it can be compiled fine (should be).
+        include: appSrc,
+        exclude: /\.module\.[a-z]+$/,
+        use: [
+          MiniCssExtractPlugin.loader,
           {
-            loader: 'postcss-loader',
+            loader: 'css-loader',
             options: {
-              plugins: () => [
-                require('postcss-import'),
-                require('autoprefixer'),
-                require('postcss-preset-env'),
-                require('cssnano')({ preset: 'default' }),
-              ],
+              sourceMap: true,
+              importLoaders: 3,
             }
           },
-          'sass-loader',
-          {
-            loader: 'sass-resources-loader',
-            options: {
-              // Add all SASS variables/mixins to inject to every file here.
-              resources: [
-                './src/styles/_config.scss',
-                './src/styles/bootstrap-override.scss',
-                './node_modules/bootstrap/scss/_functions.scss',
-                './node_modules/bootstrap/scss/_variables.scss',
-                './node_modules/bootstrap/scss/mixins/_breakpoints.scss',
-              ],
-            },
-          },
+          ...cssPreprocessors,
         ],
       },
       {
         // Grab images.
         test: /\.(jpe?g|png|gif|svg|bmp)$/i,
         include: appSrc,
-        loader: require.resolve('url-loader'),
-        options: {
-          // url-loader will convert the resource as data URI if it is less than this size.
-          limit: 10000,
-        },
+        type: 'asset',
       }
     ],
   },
   plugins: [
-    // Define additional environment variables to be used in app.
-    new webpack.EnvironmentPlugin(getEnvVariables(env)),
     // Delete previous built files before building a new one.
     new CleanWebpackPlugin(),
     // Generates an `index.html` file with the <script> injected.
@@ -213,12 +189,19 @@ module.exports = env => ({
       },
     }),
     // Copy public assets.
-    new CopyWebpackPlugin([
-      {
-        from: publicResourceSrc,
-        ignore: [publicHtml],
-      },
-    ]),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: publicResourceSrc,
+        },
+      ],
+    }),
+    // Run linter.
+    new EsLintPlugin({
+      eslintPath: require.resolve('eslint'),
+      overrideConfigFile: "./config/.eslintrc.json",
+      extensions: ['js', 'jsx', 'ts', 'tsx']
+    }),
     // Extract css to separate files.
     new MiniCssExtractPlugin({
       filename: '[name].[contenthash].css',
@@ -229,12 +212,11 @@ module.exports = env => ({
     splitChunks: {
       chunks: 'all',
     },
+    minimize: true,
     minimizer: [
       // Minify JS
       new TerserPlugin({
-        cache: true,
         parallel: true,
-        sourceMap: true,
       })
     ],
   },

@@ -1,0 +1,6 @@
+// This file would be injected to every css.
+// DO NOT put any actual rule here as it would get duplicated for every scss file imported.
+@import "~bootstrap/scss/_functions.scss";
+@import "~bootstrap/scss/_variables.scss";
+@import "~bootstrap/scss/mixins/breakpoints.scss";
+@import "./config.scss";

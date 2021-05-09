@@ -1,15 +1,21 @@
 import {
   put, takeLatest,
 } from 'redux-saga/effects';
-import {
-  INIT, setInitialState, setData,
-} from './examplePageActions';
+import { bindLoadingActions } from 'common/util/loading';
+import { exampleActions } from './examplePageSlice';
 
 function* onInit() {
-  yield put(setInitialState());
-  yield put(setData('Data from Redux'));
+  yield put(exampleActions.setInitialState());
+
+  const [, loadingFail, loadingSuccess] = bindLoadingActions(exampleActions.setPageLoading);
+  try {
+    // TODO Load some data.
+    yield put(loadingSuccess());
+  } catch (e) {
+    yield put(loadingFail(e.message));
+  }
 }
 
 export default function* mainSaga() {
-  yield takeLatest(INIT, onInit);
+  yield takeLatest(exampleActions.init.type, onInit);
 }

@@ -3,15 +3,14 @@ import { connect } from 'react-redux';
 import { PropTypes } from 'prop-types';
 
 import logo from 'assets/images/logo.png';
-import './homePage.module.scss';
+import classes from './homePage.module.scss';
 import { init } from './homePageActions';
-
 
 const HomePage = ({ onInit }) => {
   React.useEffect(() => { onInit(); }, []);
 
   return (
-    <div styleName="wrap">
+    <div className={classes.wrap}>
       <div>
         <img src={logo} alt="Logo" />
         <h1>

@@ -3,12 +3,12 @@ import { useSelector } from 'react-redux';
 import { PropTypes } from 'prop-types';
 import ErrorBoundary from './ErrorBoundary';
 
-import './globalErrorPage.module.scss';
+import classes from './globalErrorPage.module.scss';
 
 const ErrorPage = () => (
-  <div styleName="container">
-    <div styleName="title">Oops!</div>
-    <div styleName="content">
+  <div className={classes.container}>
+    <div className={classes.title}>Oops!</div>
+    <div className={classes.content}>
       Sorry, the system has encountered an unrecoverable error.
       <br />
       Please refresh this page to continue.

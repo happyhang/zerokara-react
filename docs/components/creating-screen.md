@@ -39,20 +39,12 @@ There is a boilerplate you find in `./example` folder that is able to speed up c
 - camel Case
 - Ends with `module.scss` (if not it won't work)
 
-### Actions
+### Slice
 
-- `examplePageActions.js`
+- `examplePageSlice.js`
 - camel Case
-- plural
-- Put actions & action creators here.
+- Put Redux Toolkit slice (reducer & action creators) here.
 - Optional until redux is used.
-
-### Reducer
-
-- `examplePageReducer.js`
-- camel Case
-- Put reducer in here.
-- Optional until reducer is used.
 
 ### Saga
 

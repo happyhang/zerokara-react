@@ -6,7 +6,7 @@ import { Toast } from 'common/ui/Toast';
 import Store, { reduxPersistor } from './common/setup/store';
 import Routes from './common/setup/routes';
 
-import './styles/App.scss';
+import './styles/global.scss';
 
 require('jquery/dist/jquery.slim.js');
 require('bootstrap/dist/js/bootstrap.js');
