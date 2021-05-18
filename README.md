@@ -71,7 +71,7 @@ This boilerplate will have the following dependencies specified in `package.json
   - prop-types
 - Redux
   - react-redux
-- Webpack 4
+- Webpack 5
   - webpack-dev-server 4.0 beta 3
   - webpack-cli
   - babel-loader
