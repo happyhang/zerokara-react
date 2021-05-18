@@ -1,6 +1,7 @@
 /**
  * Colors (color)
  */
+
 $color-grey-900: #000;
 $color-grey-800: #4f4f4f;
 $color-grey-700: #636363;
@@ -12,12 +13,21 @@ $color-grey-200: #e4e4e4;
 $color-grey-100: #fff;
 
 /**
+ * Font Size (fs)
+ */
+
+$fs-extra-large: 1.25rem; // 20px
+$fs-large: 1.125rem;      // 18px
+$fs-standard: 1rem;       // 16px
+$fs-small: 0.875rem;      // 14px
+$fs-extra-small: 0.75rem; // 12px
+
+/**
  * Mixins (Content)
  */
 
 @mixin text-content($font-size: $fs-standard) {
   font-size: $font-size;
-  font-weight: 300;
 }
 
 /**
@@ -55,7 +65,7 @@ $color-grey-100: #fff;
 
 // Makes the image automatically scale to fit the width specified.
 @mixin image-fit-width($w) {
- height: auto;
- width: $w;
- display: block;
+  height: auto;
+  width: $w;
+  display: block;
 }

@@ -5,4 +5,8 @@
   align-items: center;
   min-height: 100vh;
   text-align: center;
+
+  p {
+    @include text-content($fs-standard);
+  }
 }
