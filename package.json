@@ -67,7 +67,7 @@
     "js-cookie": "^2.2.1",
     "libphonenumber-js": "^1.9.17",
     "lodash": "^4.17.21",
-    "luxon": "^1.26.0",
+    "luxon": "^1.28.1",
     "prop-types": "^15.7.2",
     "query-string": "^7.0.0",
     "rc-select": "^12.1.10",
